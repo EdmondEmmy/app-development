@@ -30,5 +30,32 @@ void main(){
 
 }
 
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Encryption App',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Encryption App Using RSA'),
+          centerTitle: false,
+          backgroundColor: Colors.teal,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              TextEntryWidgetEncryptMessage(),
+              TextArea()
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 
