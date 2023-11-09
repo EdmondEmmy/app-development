@@ -25,7 +25,21 @@ Future<void> generateAndStoreKeys() async {
   await storage.write(key: 'publicKey', value: publicKeyPEM);
   await storage.write(key: 'privateKey', value: privateKeyPEM);
 }
+Future<pointyexport.RSAPublicKey?> getPublicKey() async {
+  final publicKeyPEM = await storage.read(key: 'publicKey');
+  if (publicKeyPEM != null) {
+    return RsaKeyHelper().parsePublicKeyFromPem(publicKeyPEM);
+  }
+  return null;
+}
 
+Future<pointyexport.RSAPrivateKey?> getPrivateKey() async {
+  final privateKeyPEM = await storage.read(key: 'privateKey');
+  if (privateKeyPEM != null) {
+    return RsaKeyHelper().parsePrivateKeyFromPem(privateKeyPEM);
+  }
+  return null;
+}
 void main(){
 
 }
