@@ -11,35 +11,7 @@ final TextEditingController encryptedTextController = TextEditingController();
 
 const storage = FlutterSecureStorage();
 
-Future<void> generateAndStoreKeys() async {
-  final rsaKeyHelper = RsaKeyHelper();
-  final rsaKeyPair =
-      await rsaKeyHelper.computeRSAKeyPair(rsaKeyHelper.getSecureRandom());
 
-  final publicKey = rsaKeyPair.publicKey as pointyexport.RSAPublicKey;
-  final privateKey = rsaKeyPair.privateKey as pointyexport.RSAPrivateKey;
-
-  final publicKeyPEM = rsaKeyHelper.encodePublicKeyToPemPKCS1(publicKey);
-  final privateKeyPEM = rsaKeyHelper.encodePrivateKeyToPemPKCS1(privateKey);
-
-  await storage.write(key: 'publicKey', value: publicKeyPEM);
-  await storage.write(key: 'privateKey', value: privateKeyPEM);
-}
-Future<pointyexport.RSAPublicKey?> getPublicKey() async {
-  final publicKeyPEM = await storage.read(key: 'publicKey');
-  if (publicKeyPEM != null) {
-    return RsaKeyHelper().parsePublicKeyFromPem(publicKeyPEM);
-  }
-  return null;
-}
-
-Future<pointyexport.RSAPrivateKey?> getPrivateKey() async {
-  final privateKeyPEM = await storage.read(key: 'privateKey');
-  if (privateKeyPEM != null) {
-    return RsaKeyHelper().parsePrivateKeyFromPem(privateKeyPEM);
-  }
-  return null;
-}
 void main(){
     runApp(const MyApp());
 }
@@ -285,3 +257,32 @@ class TextArea extends StatelessWidget {
   }
 }
 
+Future<void> generateAndStoreKeys() async {
+  final rsaKeyHelper = RsaKeyHelper();
+  final rsaKeyPair =
+  await rsaKeyHelper.computeRSAKeyPair(rsaKeyHelper.getSecureRandom());
+
+  final publicKey = rsaKeyPair.publicKey as pointyexport.RSAPublicKey;
+  final privateKey = rsaKeyPair.privateKey as pointyexport.RSAPrivateKey;
+
+  final publicKeyPEM = rsaKeyHelper.encodePublicKeyToPemPKCS1(publicKey);
+  final privateKeyPEM = rsaKeyHelper.encodePrivateKeyToPemPKCS1(privateKey);
+
+  await storage.write(key: 'publicKey', value: publicKeyPEM);
+  await storage.write(key: 'privateKey', value: privateKeyPEM);
+}
+Future<pointyexport.RSAPublicKey?> getPublicKey() async {
+  final publicKeyPEM = await storage.read(key: 'publicKey');
+  if (publicKeyPEM != null) {
+    return RsaKeyHelper().parsePublicKeyFromPem(publicKeyPEM);
+  }
+  return null;
+}
+
+Future<pointyexport.RSAPrivateKey?> getPrivateKey() async {
+  final privateKeyPEM = await storage.read(key: 'privateKey');
+  if (privateKeyPEM != null) {
+    return RsaKeyHelper().parsePrivateKeyFromPem(privateKeyPEM);
+  }
+  return null;
+}
