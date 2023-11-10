@@ -150,6 +150,71 @@ class _TextEntryWidgetEncryptMessageState
                   ElevatedButton.styleFrom(backgroundColor: Colors.teal),
               child: const Text('Click To Encrypt The Message')),
           const SizedBox(height: 16.0),
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextField(
+                controller: encryptedTextController,
+                maxLines: 4,
+                enabled: false,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          ElevatedButton(
+              onPressed: () async {
+                // Decrypt the text here and update the TextArea
+                String encryptedText = encryptedTextController.text;
+                if(encryptedText == ""){
+                  Fluttertoast.showToast(
+                      msg: 'Please Enter a message to encrypt',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.TOP,
+                      backgroundColor: Colors.red
+                  );
+                  return;
+                }
+
+                final privateKey = await getPrivateKey();
+
+                if (privateKey == null) {
+                  Fluttertoast.showToast(
+                    msg: 'Private key not found. Please generate keys first.',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    backgroundColor: Colors.red
+                  );
+                return;
+                }
+
+                final decrypter = Encrypter(RSA(privateKey: privateKey));
+                final decryptedMessage = decrypter.decrypt(Encrypted.fromBase64(encryptedText));
+                
+                decryptedTextController.text = decryptedMessage;
+
+                Fluttertoast.showToast(
+                  msg: 'Message Decrypted Successfully',
+                  gravity: ToastGravity.TOP,
+                  backgroundColor: Colors.black,
+                  textColor: Colors.white, //
+                );
+              },
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+              child: const Text('Click To Decrypt The Message')
+          ),
+
+        ],
+      ),
+    );
+    
+  }
+
+}
 
 
           
