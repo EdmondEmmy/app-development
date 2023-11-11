@@ -79,6 +79,80 @@ class TextEntryWidgetEncryptMessage extends StatefulWidget {
       _TextEntryWidgetEncryptMessageState();
 }
 
+class _TextEntryWidgetEncryptMessageState
+    extends State<TextEntryWidgetEncryptMessage> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextField(
+                controller: controller,
+                maxLines: 4,
+                decoration: const InputDecoration(
+                  hintText: 'Enter message to encrypt',
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          ElevatedButton(
+              onPressed: () async {
+                // Encrypt the text here and update the TextArea
+                final messageToEncrypt = controller.text;
+                final publicKey = await getPublicKey();
+                final privateKey = await getPrivateKey();
+
+                if (privateKey == null || publicKey == null) {
+                  Fluttertoast.showToast(
+                      msg: 'keys not found. Please generate keys first.',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: Colors.red
+                  );
+                  return;
+                }
+
+                if(messageToEncrypt == ""){
+                  Fluttertoast.showToast(
+                      msg: 'Please Enter a message to encrypt',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.TOP,
+                      backgroundColor: Colors.red
+                  );
+                  return;
+                }
+
+                final encrypter = Encrypter(
+                    RSA(publicKey: publicKey, privateKey: privateKey));
+
+                final encryptedMessage = encrypter.encrypt(messageToEncrypt);
+
+                encryptedTextController.text = encryptedMessage.base64;
+
+                Fluttertoast.showToast(
+                  msg: 'Message Encrypted Successfully',
+                  gravity: ToastGravity.TOP,
+                  backgroundColor: Colors.black,
+                  textColor: Colors.white, //
+                );
+              },
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+              child: const Text('Click To Encrypt The Message')),
+          const SizedBox(height: 16.0),
+
+
+          
 
 class TextArea extends StatelessWidget {
   const TextArea({super.key});
